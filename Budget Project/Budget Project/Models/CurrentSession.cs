@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace MyBudget.Models
+namespace Budget_Project.Models
 {
     public class CurrentSession
     {

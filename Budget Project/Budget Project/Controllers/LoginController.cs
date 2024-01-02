@@ -47,5 +47,14 @@ namespace MyBudget.Controllers
             db.SaveChanges();
             return RedirectToAction("Login", "Login");
         }
+        public ActionResult LogOut()
+        {
+            if (CurrentSession.User != null)
+            {
+                CurrentSession.Clear();
+                return RedirectToAction("Login");
+            }
+            return RedirectToAction("Login");
+        }
     }
 }
