@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MyBudgetModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Account">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Logo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="UserId" Type="Int32" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Account_User" FromRole="Account" ToRole="User" />
+    <NavigationProperty Name="Transaction" Relationship="Self.FK_Transaction_Account" FromRole="Account" ToRole="Transaction" />
+  </EntityType>
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Logo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="ParentId" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="UserId" Type="Int32" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Category_User" FromRole="Category" ToRole="User" />
+    <NavigationProperty Name="Transaction" Relationship="Self.FK_Transaction_Category" FromRole="Category" ToRole="Transaction" />
+  </EntityType>
+  <EntityType Name="Status">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="StatusTypeId" Type="Int32" />
+    <Property Name="CreatedUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="StatusType" Relationship="Self.FK_Status_StatusType" FromRole="Status" ToRole="StatusType" />
+    <NavigationProperty Name="User" Relationship="Self.FK_User_Status" FromRole="Status" ToRole="User" />
+  </EntityType>
+  <EntityType Name="StatusType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Status" Relationship="Self.FK_Status_StatusType" FromRole="StatusType" ToRole="Status" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Transaction">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Amount" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="AccountId" Type="Int32" />
+    <Property Name="CategoryId" Type="Int32" />
+    <Property Name="UserId" Type="Int32" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Account" Relationship="Self.FK_Transaction_Account" FromRole="Transaction" ToRole="Account" />
+    <NavigationProperty Name="Category" Relationship="Self.FK_Transaction_Category" FromRole="Transaction" ToRole="Category" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Transaction_User" FromRole="Transaction" ToRole="User" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Fullname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ProfileImage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="StatusId" Type="Int32" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="IsDelete" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Account" Relationship="Self.FK_Account_User" FromRole="User" ToRole="Account" />
+    <NavigationProperty Name="Category" Relationship="Self.FK_Category_User" FromRole="User" ToRole="Category" />
+    <NavigationProperty Name="Status" Relationship="Self.FK_User_Status" FromRole="User" ToRole="Status" />
+    <NavigationProperty Name="Transaction" Relationship="Self.FK_Transaction_User" FromRole="User" ToRole="Transaction" />
+  </EntityType>
+  <Association Name="FK_Account_User">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Account" Type="Self.Account" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Account">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Transaction_Account">
+    <End Role="Account" Type="Self.Account" Multiplicity="0..1" />
+    <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Category_User">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Category" Type="Self.Category" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Category">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Transaction_Category">
+    <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
+    <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Status_StatusType">
+    <End Role="StatusType" Type="Self.StatusType" Multiplicity="0..1" />
+    <End Role="Status" Type="Self.Status" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="StatusType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Status">
+        <PropertyRef Name="StatusTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_Status">
+    <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Status">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="StatusId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Transaction_User">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="MyBudgetEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Account" EntityType="Self.Account" />
+    <EntitySet Name="Category" EntityType="Self.Category" />
+    <EntitySet Name="Status" EntityType="Self.Status" />
+    <EntitySet Name="StatusType" EntityType="Self.StatusType" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="Transaction" EntityType="Self.Transaction" />
+    <EntitySet Name="User" EntityType="Self.User" />
+    <AssociationSet Name="FK_Account_User" Association="Self.FK_Account_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Account" EntitySet="Account" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Transaction_Account" Association="Self.FK_Transaction_Account">
+      <End Role="Account" EntitySet="Account" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Category_User" Association="Self.FK_Category_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Category" EntitySet="Category" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Transaction_Category" Association="Self.FK_Transaction_Category">
+      <End Role="Category" EntitySet="Category" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Status_StatusType" Association="Self.FK_Status_StatusType">
+      <End Role="StatusType" EntitySet="StatusType" />
+      <End Role="Status" EntitySet="Status" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_Status" Association="Self.FK_User_Status">
+      <End Role="Status" EntitySet="Status" />
+      <End Role="User" EntitySet="User" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Transaction_User" Association="Self.FK_Transaction_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

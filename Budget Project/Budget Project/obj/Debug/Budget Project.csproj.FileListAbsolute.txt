@@ -1,0 +1,2 @@
+D:\Projects\ResearchProject\Budget Project\Budget Project\obj\Debug\Budget Project.csproj.AssemblyReference.cache
+D:\Projects\ResearchProject\Budget Project\Budget Project\obj\Debug\Budget Project.csproj.CoreCompileInputs.cache

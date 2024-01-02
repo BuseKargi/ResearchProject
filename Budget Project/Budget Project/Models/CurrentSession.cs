@@ -1,5 +1,5 @@
 ﻿
-using MyBudget.Models;
+using Budget_Project.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
