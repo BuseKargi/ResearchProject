@@ -30,5 +30,22 @@ namespace MyBudget.Controllers
 
 
         }
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(User model)
+        {
+            model.IsDelete = false;
+            model.IsActive = true;
+            model.CreatedDate = DateTime.Now;
+            model.ModifiedDate = DateTime.Now;
+            model.CreatedUser = "system";
+            db.User.Add(model);
+            db.SaveChanges();
+            return RedirectToAction("Login", "Login");
+        }
     }
 }
