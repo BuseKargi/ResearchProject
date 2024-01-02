@@ -1,42 +1,238 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@using MyBudget.Models
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Anasayfa</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Assets/images/admin/favicon.png">
+    <!-- Pignose Calender -->
+    <link href="~/Assets/plugins/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet">
+    <!-- Chartist -->
+    <link rel="stylesheet" href="~/Assets/plugins/chartist/css/chartist.min.css">
+    <link rel="stylesheet" href="~/Assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
+    <!-- Custom Stylesheet -->
+    <link href="~/Assets/css/style.css" rel="stylesheet">
+    @{
+        var currentUser = CurrentSession.User;
+    }
 </head>
+
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+            </svg>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <div class="brand-logo">
+                <a href="/Home/">
+                    <b class="logo-abbr"><img src="~/Assets/images/logo.png" alt=""> </b>
+                    <span class="logo-compact"><img src="~/Assets/images/logo-compact.png" alt=""></span>
+                    <span class="brand-title">
+                        <img src="~/Assets/images/admin/logo-text.png" alt="">
+                    </span>
+                </a>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content clearfix">
+
+                <div class="nav-control">
+                    <div class="hamburger">
+                        <span class="toggle-icon"><i class="icon-menu"></i></span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <ul class="clearfix">
+                        <li class="icons d-none d-md-flex show">
+                            @if (!string.IsNullOrEmpty(currentUser.Fullname))
+                            {
+                                <span>@currentUser.Fullname</span>
+                            }
+                            else
+                            {
+                                <span>@currentUser.Email</span>
+                            }
+
+                        </li>
+                        <li class="icons dropdown">
+                            <div class="user-img c-pointer position-relative" data-toggle="dropdown">
+                                <span class="activity active"></span>
+                                <img src="~/Assets/images/user/@currentUser.ProfileImage" height="40" width="40" alt="">
+                            </div>
+                            <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
+                                <div class="dropdown-content-body">
+                                    <ul>
+                                        <li>
+                                            <a href="/User/Index"><i class="icon-user"></i> <span>Profil</span></a>
+                                        </li>
+                                        <hr class="my-2">
+                                        <li><a href="/Login/LogOut"><i class="icon-key"></i> <span>Cikis Yap</span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="nk-sidebar">
+            <div class="nk-nav-scroll">
+                <ul class="metismenu" id="menu">
+
+                    <li class="nav-label">Gösterge Paneli</li>
+
+                    <li>
+                        <a href="/Home/" aria-expanded="false">
+                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Ana Sayfa</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-grid menu-icon"></i><span class="nav-text">Hesap</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="/Account/Index">Hesaplar</a></li>
+                            <li><a href="/Account/Create">Yeni Hesap</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-note menu-icon"></i><span class="nav-text">Islem</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="/Transaction/Index">Islemler</a></li>
+                            <li><a href="/Transaction/Create">Yeni Islem</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-menu menu-icon"></i><span class="nav-text">Kategori</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="/Category/Index">Kategoriler</a></li>
+                            <li><a href="/Category/Create">Yeni Kategori</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-graph menu-icon"></i><span class="nav-text">Rapor</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="/Report/Index">Raporlar</a></li>
+                            <li><a href="#">Yeni Rapor</a></li>
+                        </ul>
+                    </li>
+
                 </ul>
             </div>
         </div>
-    </div>
-    <div class="container body-content">
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+        <!--**********************************
+            Content body start
+        ***********************************-->
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright &copy; Designed & Developed by <a href="https://themeforest.net/user/quixlab">Quixlab</a> 2018</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
     </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <script src="~/Assets/plugins/common/common.min.js"></script>
+    <script src="~/Assets/js/custom.min.js"></script>
+    <script src="~/Assets/js/settings.js"></script>
+    <script src="~/Assets/js/gleek.js"></script>
+    <script src="~/Assets/js/styleSwitcher.js"></script>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+
+    <!-- ChartistJS -->
+    <script src="~/Assets/plugins/chartist/js/chartist.min.js"></script>
+    <script src="~/Assets/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
+    <script src="~/Assets/plugins/chartist/js/plugins-init/chartist.init.js"></script>
+    <script src="~/Assets/js/plugins-init/chartist.init.js"></script> @*raporlar için önemli bir js*@
+    <!-- Chartjs -->
+    <script src="~/Assets/plugins/chart.js/Chart.bundle.min.js"></script>
+
+    <!--  flot-chart js -->
+    <script src="~/Assets/plugins/flot/js/jquery.flot.min.js"></script>
+    <script src="~/Assets/plugins/flot/js/jquery.flot.pie.js"></script>
+    <script src="~/Assets/plugins/flot/js/jquery.flot.resize.js"></script>
+    <script src="~/Assets/plugins/flot/js/jquery.flot.spline.js"></script>
+    <script src="~/Assets/plugins/flot/js/jquery.flot.init.js"></script>
+
+    <!-- Circle progress -->
+    <script src="~/Assets/plugins/circle-progress/circle-progress.min.js"></script>
+    <!-- Datamap -->
+    <script src="~/Assets/plugins/d3v3/index.js"></script>
+    <script src="~/Assets/plugins/topojson/topojson.min.js"></script>
+    <script src="~/Assets/plugins/datamaps/datamaps.world.min.js"></script>
+    <!-- Morrisjs -->
+    <script src="~/Assets/plugins/raphael/raphael.min.js"></script>
+    <script src="~/Assets/plugins/morris/morris.min.js"></script>
+    <!-- Pignose Calender -->
+    <script src="~/Assets/plugins/moment/moment.min.js"></script>
+    <script src="~/Assets/plugins/pg-calendar/js/pignose.calendar.min.js"></script>
+
+    <script src="~/Assets/js/dashboard/dashboard-1.js"></script>
+
 </body>
+
 </html>
