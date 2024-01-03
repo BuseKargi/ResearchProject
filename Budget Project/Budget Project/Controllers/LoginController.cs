@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace MyBudget.Controllers
+namespace Budget_Project.Controllers
 {
     public class LoginController : Controller
     {
