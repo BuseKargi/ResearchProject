@@ -49,5 +49,58 @@ namespace Budget_Project.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+        [Auth]
+        public ActionResult Edit(int? id)
+        {
+            if (id != null)
+            {
+                Account data = db.Account.SingleOrDefault(x => x.Id == id);
+                if (data != null)
+                {
+                    return View(data);
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Account model, HttpPostedFileBase LogoPath)
+        {
+            Account data = db.Account.SingleOrDefault(x => x.Id == model.Id);
+            if (data != null)
+            {
+                if (LogoPath != null)
+                {
+                    string _LogoPath = $"{model.Name}.{LogoPath.ContentType.Split('/')[1]}";
+                    LogoPath.SaveAs(Server.MapPath($"~/Assets/images/account/{_LogoPath}"));
+                    data.Logo = _LogoPath;
+                }
+                else
+                {
+                    model.Logo = null;
+                }
+                data.Name = model.Name;
+                data.ModifiedDate = DateTime.Now;
+
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
+        public ActionResult Delete(int id)
+        {
+            if (id != null)
+            {
+                Account data = db.Account.FirstOrDefault(x => x.Id == id);
+                if (data != null)
+                {
+                    db.Account.Remove(data);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            return RedirectToAction("Index");
+        }
     }
 }
