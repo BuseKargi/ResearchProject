@@ -10,19 +10,18 @@ using Budget_Project.Models;
 
 namespace Budget_Project.Controllers
 {
+    [Auth]
     public class AccountController : Controller
     {
         MyBudgetEntities db = new MyBudgetEntities();
 
         // GET: Account
-        [Auth]
         public ActionResult Index()
         {
             var currentUser = CurrentSession.User.Id;
             var account = db.Account.Where(x => x.UserId == currentUser).ToList();
             return View(account);
         }
-        [Auth]
         public ActionResult Create()
         {
             return View();
@@ -30,6 +29,8 @@ namespace Budget_Project.Controllers
         [HttpPost]
         public ActionResult Create(Account model, HttpPostedFileBase LogoPath)
         {
+            if (!ModelState.IsValid) return Json(new { success = false, message = "Gerekli Alanları Doldurun." });
+            
             if (LogoPath != null)
             {
                 string _LogoPath = $"{model.Name}.{LogoPath.ContentType.Split('/')[1]}";
@@ -43,13 +44,13 @@ namespace Budget_Project.Controllers
             var currentUser = CurrentSession.User.Id;
 
             model.CreatedDate = DateTime.Now;
-            model.ModifiedDate = DateTime.Now;
+            model.ModifiedDate= DateTime.Now;
             model.UserId = currentUser;
             db.Account.Add(model);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-        [Auth]
+
         public ActionResult Edit(int? id)
         {
             if (id != null)
@@ -66,6 +67,8 @@ namespace Budget_Project.Controllers
         [HttpPost]
         public ActionResult Edit(Account model, HttpPostedFileBase LogoPath)
         {
+            if (!ModelState.IsValid) return Json(new { success = false, message = "Gerekli Alanları Doldurun." });
+
             Account data = db.Account.SingleOrDefault(x => x.Id == model.Id);
             if (data != null)
             {

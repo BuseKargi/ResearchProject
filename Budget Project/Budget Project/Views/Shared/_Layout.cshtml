@@ -1,5 +1,4 @@
-﻿@using Budget_Project.Models
-
+﻿ @using Budget_Project.Models   
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,6 +15,11 @@
     <link rel="stylesheet" href="~/Assets/plugins/chartist/css/chartist.min.css">
     <link rel="stylesheet" href="~/Assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
     <link rel="stylesheet" href="~/icons/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/sweetalert2.css">
+    <link href="https://codeseven.github.io/toastr/build/toastr.min.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://codeseven.github.io/toastr/build/toastr.min.js"></script>
+    
     <!-- Custom Stylesheet -->
     <link href="~/Assets/css/style.css" rel="stylesheet">
     @{
@@ -87,7 +91,14 @@
                         <li class="icons dropdown">
                             <div class="user-img c-pointer position-relative" data-toggle="dropdown">
                                 <span class="activity active"></span>
-                                <img src="~/Assets/images/user/@currentUser.ProfileImage" height="40" width="40" alt="">
+                                @if (string.IsNullOrEmpty(currentUser.ProfileImage))
+                                {
+                                    <img src="~/Assets/images/user/@currentUser.ProfileImage" height="40" width="40" alt="">
+                                }
+                                else
+                                {
+                                    <img src="~/Assets/images/user/user-avatar.jpg" height="40" width="40" alt="">
+                                }
                             </div>
                             <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
                                 <div class="dropdown-content-body">
@@ -115,96 +126,89 @@
             <div class="nk-nav-scroll">
                 <ul class="metismenu" id="menu">
 
-                    <li class="nav-label">Gösterge Paneli</li>
+                    <li class="nav-label">Menu</li>
 
                     <li>
                         <a href="/Home/" aria-expanded="false">
-                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Ana Sayfa</span>
+                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
                         </a>
                     </li>
 
                     <li>
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            <i class="icon-grid menu-icon"></i><span class="nav-text">Hesap</span>
+                            <i class="icon-grid menu-icon"></i><span class="nav-text">Account</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="/Account/Index">Hesaplar</a></li>
-                            <li><a href="/Account/Create">Yeni Hesap</a></li>
+                            <li><a href="/Account/Index">Accounts</a></li>
+                            <li><a href="/Account/Create">New Account</a></li>
                         </ul>
                     </li>
 
 
                     <li>
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            <i class="icon-note menu-icon"></i><span class="nav-text">Islem</span>
+                            <i class="icon-note menu-icon"></i><span class="nav-text">Transaction</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="/Transaction/Index">Islemler</a></li>
-                            <li><a href="/Transaction/Create">Yeni Islem</a></li>
+                            <li><a href="/Transaction/Index">Transactions</a></li>
+                            <li><a href="/Transaction/Create">New Transaction</a></li>
                         </ul>
                     </li>
 
 
                     <li>
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            <i class="icon-menu menu-icon"></i><span class="nav-text">Kategori</span>
+                            <i class="icon-menu menu-icon"></i><span class="nav-text">Category</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="/Category/Index">Kategoriler</a></li>
-                            <li><a href="/Category/Create">Yeni Kategori</a></li>
+                            <li><a href="/Category/Index">Categories</a></li>
+                            <li><a href="/Category/Create">New Category</a></li>
                         </ul>
                     </li>
 
 
                     <li>
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            <i class="icon-graph menu-icon"></i><span class="nav-text">Rapor</span>
+                            <i class="icon-graph menu-icon"></i><span class="nav-text">Report</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="/Report/Index">Raporlar</a></li>
-                            <li><a href="#">Yeni Rapor</a></li>
+                            <li><a href="/Report/Index">Reports</a></li>
+                            <li><a href="#">New Report</a></li>
                         </ul>
                     </li>
-
+                    
+                    <li>
+                        <a href="#"  aria-expanded="false">
+                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Voice Commands*</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <button type="button" class="btn mb-1 btn-primary" id="startSpeechRecognition">
+                            Start Voice Command
+                            <span class="btn-icon-right"><i class="fa fa-plus-circle"></i></span>
+                        </button>
+                  
+                    </li>
                 </ul>
             </div>
         </div>
-        <!--**********************************
-            Sidebar end
-        ***********************************-->
-        <!--**********************************
-            Content body start
-        ***********************************-->
+
         @RenderBody()
-        <!--**********************************
-            Content body end
-        ***********************************-->
-        <!--**********************************
-            Footer start
-        ***********************************-->
         <div class="footer">
             <div class="copyright">
-                <p>Copyright &copy; Designed & Developed by <a href="https://themeforest.net/user/quixlab">Quixlab</a> 2018</p>
+                <p>Copyright &copy; Designed & Developed by <a href="#">My Budget</a> 2024</p>
             </div>
         </div>
-        <!--**********************************
-            Footer end
-        ***********************************-->
     </div>
-    <!--**********************************
-        Main wrapper end
-    ***********************************-->
-    <!--**********************************
-        Scripts
-    ***********************************-->
+
     <script src="~/Assets/plugins/common/common.min.js"></script>
     <script src="~/Assets/js/custom.min.js"></script>
     <script src="~/Assets/js/settings.js"></script>
     <script src="~/Assets/js/gleek.js"></script>
     <script src="~/Assets/js/styleSwitcher.js"></script>
 
-
-    <!-- ChartistJS -->
     <script src="~/Assets/plugins/chartist/js/chartist.min.js"></script>
     <script src="~/Assets/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
     <script src="~/Assets/plugins/chartist/js/plugins-init/chartist.init.js"></script>
@@ -233,6 +237,9 @@
     <script src="~/Assets/plugins/pg-calendar/js/pignose.calendar.min.js"></script>
 
     <script src="~/Assets/js/dashboard/dashboard-1.js"></script>
+    <script src="~/Assets/js/sweetalert2.min.js"></script>
+    <script src="~/Assets/js/tosterOptions.js"></script>
+    <script src="~/Assets/js/recognitionDefault.js"></script>
 
 </body>
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Budget_Project.Models.Category>
+﻿@model Budget_Project.Models.Category
 @{
     ViewBag.Title = "Create";
 }
@@ -13,7 +13,7 @@
                         <div class="row">
                             <div class="col-md-3"></div>
                             <div class="col-lg-6">
-                                <h4 class="card-title mb-4">Yeni Kategori</h4>
+                                <h4 class="card-title mb-4">New Category</h4>
                                 @using (Html.BeginForm("Create", "Category", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                 {
                                     @Html.AntiForgeryToken()
@@ -21,31 +21,42 @@
                                     <div class="basic-form">
                                         <form>
                                             <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label">Kategori Adı</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="Name" id="Name" placeholder="Kategori Adı">
+                                                <label class="col-sm-3 col-form-label">Name</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control" name="Name" required="required" id="Name" placeholder="Name">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="#" id="nameMicrophoneBtn" class="btn btn-primary" >
+                                                        <i class="fa fa-microphone"></i> 
+                                                    </a>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-3 col-form-label">Logo</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-7">
                                                     <div class="custom-file">
-                                                        <input type="file" class="custom-file-input" name="LogoPath" id="LogoPath">
-                                                        <label class="custom-file-label">Logo Seç...</label>
+                                                        <input type="file" name="LogoPath" id="LogoPath" class="form-control" onchange="showImagePreview(this)">
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-2">
+                                                    <img id="imagePreview" class="mr-3 circle-rounded" src="#" width="50" height="50" style="display:none;">
+                                                </div>
                                             </div>
                                             <div class="form-group row">
-                                                <div class="col-sm-3">Alt Kategori</div>
-                                                <div class="col-sm-9">
-                                                    @Html.DropDownList("ParentId", null, "Ana Kategori Seçin", htmlAttributes: new { @class = "form-control" })
-
+                                                <div class="col-sm-3">Main Category</div>
+                                                <div class="col-sm-7">
+                                                    @Html.DropDownList("ParentId", null, "Select Main Category", htmlAttributes: new { @class = "form-control" ,id = "ParentId" ,@required="required"})
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="#" id="parentMicrophoneBtn" class="btn btn-primary" >
+                                                        <i class="fa fa-microphone"></i> 
+                                                    </a>
                                                 </div>
                                             </div>
 
                                             <div class="form-group row">
-                                                <div class="col-sm-3">Aktif mi?</div>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-3">Active?</div>
+                                                <div class="col-sm-7">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label">
                                                             @Html.CheckBox("IsActive", false)
@@ -56,7 +67,8 @@
 
                                             <div class="form-group row">
                                                 <div class="col-sm-10">
-                                                    <button type="submit" class="btn btn-dark">Ekle</button>
+                                                    <button type="submit" class="btn btn-primary">Create</button>
+                                                    <a class="btn btn-dark" href="/Category">Back</a>
                                                 </div>
                                             </div>
                                         </form>
@@ -70,7 +82,65 @@
             </div>
         </div>
     </div>
-
-
 </div>
 
+<script>
+
+document.getElementById('nameMicrophoneBtn').addEventListener('click', function() {
+    startRecognition('Name','input');
+});
+
+document.getElementById('parentMicrophoneBtn').addEventListener('click', function () {
+    startRecognition('ParentId','select-category');
+});
+
+function startRecognition(inputId, inputType) {
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'tr-TR';
+    
+    recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript;
+    
+        if (inputType === 'input') {
+            $('#' + inputId).val(transcript);
+        } else if (inputType === 'select-category') {
+            selectCategory(transcript);
+        }
+    };
+    
+    recognition.start();
+}
+    
+function selectCategory(transcript) {
+    const dropdown = document.getElementById('ParentId');
+    let categoryFound = false;
+
+    for (let i = 0; i < dropdown.options.length; i++) {
+        if (dropdown.options[i].text.toLowerCase() === transcript.toLowerCase()) {
+            dropdown.selectedIndex = i;
+            categoryFound = true;
+            break;
+        }
+    }
+
+    if (!categoryFound) {
+        toastr.warning("We didn't understand you.", "Warning!");
+    }
+}
+
+function showImagePreview(input) {
+    var fileInput = input;
+    var imagePreview = document.getElementById('imagePreview');
+
+    if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+}
+</script>

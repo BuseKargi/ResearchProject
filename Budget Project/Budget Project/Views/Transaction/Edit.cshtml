@@ -1,0 +1,173 @@
+﻿@model Budget_Project.Models.Transaction
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="content-body">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-lg-6">
+                                <h4 class="card-title mb-4">Update Transaction</h4>
+
+                                @using (Html.BeginForm("Edit", "Transaction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+
+                                    <div class="basic-form">
+                                        <form>
+                                            <div class="form-group row" hidden="hidden">
+                                                <label class="col-sm-3 col-form-label">Id</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control" name="Id" id="Name" value="@Model.Id" placeholder="ID">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label">Islem Adı</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control" name="Name" id="Name" required="required" value="@Model.Name" placeholder="Islem Adı">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="#" id="nameMicrophoneBtn" class="btn btn-primary" >
+                                                        <i class="fa fa-microphone"></i> 
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label">Islem Aciklamasi</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control" name="Description" id="Description" value="@Model.Description" placeholder="Aciklama">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="#" id="descriptionMicrophoneBtn" class="btn btn-primary" >
+                                                        <i class="fa fa-microphone"></i> 
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-sm-3">Hesap</div>
+                                                <div class="col-sm-7">
+                                                    @Html.DropDownList("AccountId", null, null, htmlAttributes: new { @class = "form-control" ,id = "AccountId",@required="required"})
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="#" id="accountMicrophoneBtn" class="btn btn-primary" >
+                                                        <i class="fa fa-microphone"></i> 
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            
+
+                                            <div class="form-group row">
+                                                <div class="col-sm-3">Alt Kategori</div>
+                                                <div class="col-sm-7">
+                                                    @Html.DropDownList("CategoryId", null, null, htmlAttributes: new { @class = "form-control" ,id = "CategoryId",@required="required"})
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="#" id="categoryMicrophoneBtn" class="btn btn-primary" >
+                                                        <i class="fa fa-microphone"></i> 
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label">Tutar</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control" name="Amount" required="required" id="Amount" value="@Model.Amount" placeholder="Tutar...">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <a href="#" id="amountMicrophoneBtn" class="btn btn-primary" >
+                                                        <i class="fa fa-microphone"></i> 
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <div class="col-sm-10">
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                    <a class="btn btn-dark" href="/Transaction">Back</a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    document.getElementById('nameMicrophoneBtn').addEventListener('click', function () {
+        startRecognition('Name','input');
+    });
+
+    document.getElementById('descriptionMicrophoneBtn').addEventListener('click', function () {
+        startRecognition('Description','input');
+    });
+
+    document.getElementById('amountMicrophoneBtn').addEventListener('click', function () {
+        startRecognition('Amount','input');
+    });
+    
+    document.getElementById('categoryMicrophoneBtn').addEventListener('click', function () {
+        startRecognition('CategoryId','select-category');
+    });
+    
+    document.getElementById('accountMicrophoneBtn').addEventListener('click', function () {
+        startRecognition('AccountId','select-account');
+    });
+
+    
+    function startRecognition(inputId, inputType) {
+      
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'tr-TR';
+    
+        recognition.onresult = function (event) {
+            const transcript = event.results[0][0].transcript;
+    
+            if (inputType === 'input') {
+                $('#' + inputId).val(transcript);
+            } else if (inputType === 'select-category') {
+                selectCategory(transcript);
+            }
+            else if (inputType === 'select-account') {
+                selectAccount(transcript);
+            }
+        };
+    
+        recognition.start();
+    }
+    
+    function selectCategory(transcript) {
+        const dropdown = document.getElementById('CategoryId');
+        for (let i = 0; i < dropdown.options.length; i++) {
+            if (dropdown.options[i].text.toLowerCase() === transcript.toLowerCase()) {
+                dropdown.selectedIndex = i;
+                break;
+            }
+        }
+    }
+    
+    function selectAccount(transcript) {
+        const dropdown = document.getElementById('AccountId');
+        for (let i = 0; i < dropdown.options.length; i++) {
+            if (dropdown.options[i].text.toLowerCase() === transcript.toLowerCase()) {
+                dropdown.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+</script>

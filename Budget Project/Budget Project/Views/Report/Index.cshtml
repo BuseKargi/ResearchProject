@@ -1,0 +1,174 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .ct-chart .ct-label {
+        fill: #000000 !important;
+        color: #000000 !important;
+    }
+</style>
+
+<div class="content-body">
+
+    <!-- row -->
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Line Chart</h4>
+                        <div id="flotLine1" class="flot-chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Pie Chart</h4>
+                        <div id="flotPie1" class="flot-chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Line chart with area</h4>
+                        <div id="chart-with-area" class="ct-chart ct-golden-section"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Overlapping bars on mobile</h4>
+                        <div id="overlapping-bars" class="ct-chart ct-golden-section"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Line Scatter Diagram</h4>
+                        <div id="scatter-diagram" class="ct-chart ct-golden-section"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Animating a Donut with Svg.animate</h4>
+                        <div id="animating-donut" class="ct-chart ct-golden-section"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #/ container -->
+</div>
+
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/Report/AjaxMethod",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var chart = new Chartist.Pie('#animating-donut', {
+                        series: response.names,
+                        labels: response.lables
+                    }, {
+                        donut: true,
+                        showLabel: true,
+                        plugins: [
+                            Chartist.plugins.tooltip()
+                        ]
+                    });
+                    chart.on('draw', function (data) {
+                        if (data.type === 'slice') {
+                            // Get the total path length in order to use for dash array animation
+                            var pathLength = data.element._node.getTotalLength();
+
+                            // Set a dasharray that matches the path length as prerequisite to animate dashoffset
+                            data.element.attr({
+                                'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+                            });
+
+                            // Create animation definition while also assigning an ID to the animation for later sync usage
+                            var animationDefinition = {
+                                'stroke-dashoffset': {
+                                    id: 'anim' + data.index,
+                                    dur: 1000,
+                                    from: -pathLength + 'px',
+                                    to: '0px',
+                                    easing: Chartist.Svg.Easing.easeOutQuint,
+                                    // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
+                                    fill: 'freeze'
+                                }
+                            };
+
+                            // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
+                            if (data.index !== 0) {
+                                animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
+                            }
+
+                            // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
+                            data.element.attr({
+                                'stroke-dashoffset': -pathLength + 'px'
+                            });
+
+                            // We can't use guided mode as the animations need to rely on setting begin manually
+                            // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
+                            data.element.animate(animationDefinition, false);
+                        }
+                    });
+                    chart.on('created', function () {
+                        if (window.__anim21278907124) {
+                            clearTimeout(window.__anim21278907124);
+                            window.__anim21278907124 = null;
+                        }
+                        //window.__anim21278907124 = setTimeout(chart.update.bind(chart), 10000);
+                    });
+                },
+                failure: function (response) {
+                    alert("failure " +response.responseText);
+                },
+                error: function (response) {
+                    alert("error " +response.responseText);
+                }
+            });
+    });
+
+
+
+
+
+    //var cartCategoryTotals = document.getElementById("CartCategoryTotals").innerHTML;
+    //var cartCategoryNames = document.getElementById("CartCategoryNames").innerHTML;
+
+    //var y = console.log(cartCategoryTotals.replace(/['"]/g, ''));
+    //var x = console.log(cartCategoryNames.replace(/['"]/g, ''));
+
+
+    //console.log(cartCategoryTotals);
+
+
+
+
+
+    
+
+</script>

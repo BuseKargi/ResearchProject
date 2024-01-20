@@ -1,39 +1,44 @@
-﻿using System;
+﻿using Budget_Project.Filters;
+using Budget_Project.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
-using Budget_Project.Filters;
 using System.Web.Mvc;
-using Budget_Project.Models;
 
-namespace MyBudget.Controllers
+namespace Budget_Project.Controllers
 {
+    [Auth]
     public class CategoryController : Controller
     {
         MyBudgetEntities db = new MyBudgetEntities();
+
         // GET: Category
-        [Auth]
         public ActionResult Index()
         {
             var currentUser = CurrentSession.User.Id;
             var category = db.Category.Where(x => x.UserId == currentUser).ToList();
             return View(category);
         }
-        [Auth]
+
         public ActionResult Create()
         {
-            ViewBag.ParentId = new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id", "Name");
+            ViewBag.ParentId = new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(),
+                "Id", "Name");
             return View();
         }
+
         [HttpPost]
         public ActionResult Create(Category model, HttpPostedFileBase LogoPath)
         {
             if (ModelState.IsValid)
             {
-                ViewBag.ParentId = new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id", "Name");
+                ViewBag.ParentId =
+                    new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id",
+                        "Name");
 
                 if (LogoPath != null)
                 {
@@ -45,7 +50,9 @@ namespace MyBudget.Controllers
                 {
                     model.Logo = null;
                 }
+
                 var currentUser = CurrentSession.User.Id;
+
                 model.ParentId = model.ParentId == null ? 0 : model.ParentId;
                 model.UserId = currentUser;
                 model.CreatedDate = DateTime.Now;
@@ -54,14 +61,15 @@ namespace MyBudget.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             return View(model);
         }
-        [Auth]
+
         public ActionResult Edit(int? id)
         {
             List<SelectListItem> Status = new List<SelectListItem>();
-            Status.Add(new SelectListItem() { Text = "Gelir", Value = "false" });
-            Status.Add(new SelectListItem() { Text = "Gider", Value = "true" });
+            Status.Add(new SelectListItem() { Text = "Income", Value = "false" });
+            Status.Add(new SelectListItem() { Text = "Expense", Value = "true" });
 
 
             Category category = db.Category.Find(id);
@@ -71,17 +79,24 @@ namespace MyBudget.Controllers
 
             if (selectedSubCategory != null)
             {
-                ViewBag.ParentId = new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id", "Name", selectedSubCategory.Id);
+                ViewBag.ParentId =
+                    new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id", "Name",
+                        selectedSubCategory.Id);
             }
             else
             {
                 if (category.ParentId == 0)
                 {
-                    ViewBag.ParentId = new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true && x.Id != category.Id).ToList(), "Id", "Name");
+                    ViewBag.ParentId =
+                        new SelectList(
+                            db.Category.Where(x => x.ParentId == 0 && x.IsActive == true && x.Id != category.Id)
+                                .ToList(), "Id", "Name");
                 }
                 else
                 {
-                    ViewBag.ParentId = new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id", "Name");
+                    ViewBag.ParentId =
+                        new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id",
+                            "Name");
                 }
             }
 
@@ -91,7 +106,9 @@ namespace MyBudget.Controllers
         [HttpPost]
         public ActionResult Edit(Category model, HttpPostedFileBase LogoPath)
         {
-            Category data = db.Category.SingleOrDefault(x => x.Id == model.Id);
+            if (!ModelState.IsValid) return View(model);
+
+            var data = db.Category.SingleOrDefault(x => x.Id == model.Id);
 
             if (LogoPath != null)
             {
@@ -103,22 +120,51 @@ namespace MyBudget.Controllers
             {
                 model.Logo = null;
             }
+
             var selectedSubCategory = db.Category.SingleOrDefault(x => x.Id == data.ParentId);
             if (selectedSubCategory != null)
             {
-                ViewBag.ParentId = new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id", "Name", selectedSubCategory.Id);
+                ViewBag.ParentId =
+                    new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id", "Name",
+                        selectedSubCategory.Id);
             }
             else
             {
-                ViewBag.ParentId = new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id", "Name");
+                ViewBag.ParentId =
+                    new SelectList(db.Category.Where(x => x.ParentId == 0 && x.IsActive == true).ToList(), "Id",
+                        "Name");
             }
+
             data.ParentId = model.ParentId == null ? 0 : model.ParentId;
             data.Name = model.Name;
             data.IsActive = model.IsActive;
             data.ModifiedDate = DateTime.Now;
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
 
+        public ActionResult Delete(int id)
+        {
+            if (id != null)
+            {
+                Transaction trs = db.Transaction.FirstOrDefault(x => x.CategoryId == id);
+                if (trs == null)
+                {
+                    Category data = db.Category.FirstOrDefault(x => x.Id == id);
+                    if (data != null) //eğer bu kategoriyi kullanan transaction yok ise silmesine izin ver
+                    {
+                        db.Category.Remove(data);
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                }
+                else //eğer bu kategoriyi kullanan transaction var ise silmesine izin verme tekrar döndür.
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

@@ -86,6 +86,7 @@
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
           <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
           <ScalarProperty Name="CreatedUser" ColumnName="CreatedUser" />
+          <ScalarProperty Name="IsVerified" ColumnName="IsVerified" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

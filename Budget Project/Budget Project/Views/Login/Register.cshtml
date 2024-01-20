@@ -11,8 +11,8 @@
                 <div class="form-input-content">
                     <div class="card login-form mb-0">
                         <div class="card-body pt-5">
-
                             <a class="text-center" href="#"> <h4>Kayıt Ol</h4></a>
+                            @Html.ValidationSummary()
                             @using (Html.BeginForm("Register", "Login", FormMethod.Post))
                             {
                                 <form class="mt-5 mb-5 login-input">
@@ -28,13 +28,11 @@
                                     <button class="btn login-form__btn submit w-100">Sign in</button>
                                 </form>
                             }
-                            <p class="mt-5 login-form__footer">Hesabınız var mı? <a href="/Login/Login" class="text-primary">Giriş Yap</a></p>
-                            </p>
-                        </div>
+                                <p class="mt-5 login-form__footer">Hesabınız var mı? <a href="/Login/Login" class="text-primary">Giriş Yap</a></p>
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-    </div>

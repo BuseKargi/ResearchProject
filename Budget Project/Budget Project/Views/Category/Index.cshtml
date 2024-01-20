@@ -27,6 +27,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Kategori</th>
+                                        <th>Logo</th>
                                         <th>Aktif/Pasif</th>
                                         <th>Tarih</th>
                                         <th>Ana/Alt Kategori</th>
@@ -40,18 +41,31 @@
                                         <tr>
                                             <td>@item.Id</td>
                                             <td>
-                                                <img src="~/Assets/images/category/@item.Logo" style="width:30px" class=" rounded-circle mr-3" alt="">
                                                 @item.Name
                                             </td>
-                                            @if (item.IsActive == true)
+                                            
+                                            @if (item.Logo != null)
                                             {
-
-                                                <td>Aktif</td>
+                                                <td>
+                                                    <img class="mr-3 circle-rounded" src="~/Assets/images/category/@item.Logo" width="40" height="40" alt="Akbank">
+                                                </td>
                                             }
                                             else
                                             {
-
-                                                <td>Aktif Değil</td>
+                                                <td></td>
+                                            }
+                                            
+                                            @if (item.IsActive == true)
+                                            {
+                                                <td>
+                                                    <span class="label gradient-1 rounded">Aktif</span>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <span class="label gradient-2 rounded">Aktif Değil</span>
+                                                </td>
                                             }
                                             <td>@item.ModifiedDate.Value.ToString("dd/MM/yyyy HH:mm") </td>
                                             @if (item.ParentId == 0)
@@ -68,7 +82,7 @@
                                                     <a href="/Category/Edit/@item.Id" data-toggle="tooltip" data-placement="top" title="Düzenle">
                                                         <i class="fa fa-pencil color-muted m-r-5"></i>
                                                     </a>
-                                                    <a href="/Category/Delete/@item.Id" data-toggle="tooltip" data-placement="top" title="Sil">
+                                                    <a href="#" onclick="removeCategory(@item.Id)" data-toggle="tooltip" data-placement="top" title="Sil">
                                                         <i class="fa fa-close color-danger"></i>
                                                     </a>
                                                 </span>
@@ -89,3 +103,41 @@
     <!-- #/ container -->
 </div>
 
+
+<script>
+    function removeCategory(itemId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Are you sure you want to delete this item?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Delete',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Category/Delete/" + itemId,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Successful',
+                            text: 'The deletion was carried out'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                setTimeout(function() {
+                                    location.reload(); 
+                                });
+                            }
+                        });
+                    },
+                    error: function (error) {
+                        alert("An error occurred during the deletion process");
+                    }
+                });
+            }
+        });
+    }
+</script>
