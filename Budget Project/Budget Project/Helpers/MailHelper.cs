@@ -19,7 +19,7 @@ namespace Budget_Project.Helpers
             try
             {
                 var message = new MailMessage();
-                message.From = new MailAddress("fuat@grouptaiga.com");
+                message.From = new MailAddress("fuatatikamazon@gmail.com");
 
                 to.ForEach(x =>
                 {
@@ -31,14 +31,14 @@ namespace Budget_Project.Helpers
                 message.IsBodyHtml = isHtml;
 
                 using (var smtp = new SmtpClient(
-                           "smtp.yandex.ru",
+                           "smtp.gmail.com",
                            587))
                 {
                     smtp.EnableSsl = true;
                     smtp.Credentials =
                         new NetworkCredential(
-                            "fuat@grouptaiga.com",
-                            "parola");
+                            "buseforsome@gmail.com",
+                            "eaue xojf cmcq ophj");
 
                     smtp.Send(message);
                     result = true;
